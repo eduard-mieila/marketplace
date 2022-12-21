@@ -1,0 +1,38 @@
+MIEILA Eduard-Robert
+Marketplace
+
+Marketplace va folosi:
+prod - un dictionar ce va contine cozile de productie ale fiecarui producator
+prod_lock - lock pentru prod
+prod_id - un contor pentru id-ul producatorilor
+prod_id_lock - lock pentru prod_id
+cons_id - un contor pentru id-ul consumatorilor
+cons_id_lock - lock pentru cons_id
+carts - un dictionar cu liste de tupluri [id_producator, produs]
+carts_lock - lock pentru carts
+carts_max_cap - capacitatea maxima a unei cozi de productie
+
+register_producer si new_cart vor fi metode ce vor incrementa variabile
+in mod sigur pentru rularea paralela.
+Metoda publish va cauta producatorul, va verifica daca acesta are coada de
+productie plina, iar daca nu o are, va adauga produsul. Metoda va bloca resursa
+prod pentru a nu suferi modificari din alt thread.
+Metoda add_to_cart va cauta primul producator care are in coada de productie
+produsul dorit, nu inainte de a bloca lock-ul pentru prod. Imediat ce a gasit
+produsul, va bloca si resursa carts si va adauga produsul in cosul dorit, dupa
+care va elimina produsul din coada de productie. La final se vor elibera cele 2
+lock-uri. Daca produsul nu este gasit, se va returna false.
+Metoda remove_from_cart va cauta produsul in cos, nu inainte de a bloca resursa
+carts, o va elimina din cos, va bloca resursa prod si va adauga inapoi produsul
+in coada de productie. La final, elibereaza lock-urile.
+Metoda place_order returneaza toate produsele dintr-un cos sub forma de lista.
+
+Producer va folosi toate datele ca parametru in constructor.
+Metoda sa run va rula in bucla infinta, producand elementele specifice unui
+producator la timpii dati ca parametru. Daca nu se poate adauga un element, se
+asteapta conform cerintei.
+
+Consumer va folosi toate datele ca parametru in constructor.
+Metoda sa run va lua cate un cos de cumparaturi pe rand, va rula toate comenzile
+primite, asteptand acolo unde este cazul. La final, va plasa comanda prin
+place_order din marketplace si va afisa mesajele solicitate de cerinta.
